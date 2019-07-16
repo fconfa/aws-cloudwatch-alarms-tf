@@ -1,7 +1,7 @@
 terraform {
     /*backend "s3" {
-        bucket = "terraform-artifacts-bucket"
-        key    = "cloudwatch-demo/terraform.tfstate"
+        bucket = "tf-s3-bucket-name"
+        key    = "terraform.tfstate"
         region = "${var.aws_region}"
     }*/
 }

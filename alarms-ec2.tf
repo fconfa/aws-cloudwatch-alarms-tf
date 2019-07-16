@@ -38,7 +38,8 @@ resource "aws_cloudwatch_metric_alarm" "alarm-securitygroup-changes" {
 }
 
 #---------------------------------------------------
-# Alerts when changes are made to an EC2 instance.
+# Alerts when changes are made to an EC2 instance state
+# (ie. started, stopped, rebooted, ...)
 #
 # Trigger: >=1 event within 5 minutes
 #---------------------------------------------------

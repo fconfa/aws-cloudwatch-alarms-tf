@@ -68,5 +68,5 @@ Route53 / MyApp - High connection time|Monitor average connection time to endpoi
 
 ## Cost
 
-* Every CloudWatch event costs ...
 * Metrics collected by the CloudWatch Agent on EC2 instances are billed as custom metrics.
+* TBC...

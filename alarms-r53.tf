@@ -1,20 +1,21 @@
 #---------------------------------------------------
 # Configure Route53 HealthChecks with alarms.
 #
-# We rely on Route53 Health Checks ability to send
-# events to CloudWatch.
+# We rely on Route53 Health Checks ability to send events to CloudWatch.
 #
 # Metrics:
 #   * HealthCheckStatus (Minimum, 1=Healthy,0=Unhealthy)
 #   * ConnectionTime (ms, Average)
 #   * HealthCheckPercentageHealthy (percent, Average)
 #
-# Variables needed:
-#   
 #---------------------------------------------------
 
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !! This requires working in the us-east-1 region  !!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 resource "aws_route53_health_check" "myapplication_health" {
-    fqdn = "caronte.helvetelabs.net"
+    fqdn = "endpoint.example.com"
     port = 443
     type = "TCP"
     failure_threshold = 5
