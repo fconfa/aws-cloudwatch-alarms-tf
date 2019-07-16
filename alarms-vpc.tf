@@ -1,4 +1,44 @@
 #---------------------------------------------------
+# Detect and alert on VPC changes
+#
+# Trigger: >=1 event within 5 minutes
+#---------------------------------------------------
+resource "aws_cloudwatch_log_metric_filter" "filter-vpc-changes" {
+    name = "vpc_changes"
+    pattern = <<PATTERN
+{ ($.eventName = CreateVpc) || ($.eventName = DeleteVpc) || ($.eventName
+    = ModifyVpcAttribute) || ($.eventName = AcceptVpcPeeringConnection) ||
+    ($.eventName = CreateVpcPeeringConnection) || ($.eventName =
+    DeleteVpcPeeringConnection) || ($.eventName =
+    RejectVpcPeeringConnection) || ($.eventName = AttachClassicLinkVpc) ||
+    ($.eventName = DetachClassicLinkVpc) || ($.eventName =
+    DisableVpcClassicLink) || ($.eventName = EnableVpcClassicLink) }
+PATTERN
+
+    log_group_name = "${var.cloudwatch_log_group}"
+
+    metric_transformation {
+        namespace = "CloudTrailMetrics"
+        name = "VpcEventCount"
+        value = "1"
+    }
+}
+
+resource "aws_cloudwatch_metric_alarm" "alarm-vpc-changes" {
+    alarm_name                = "VPC changes"
+    alarm_description         = "Triggers when changes are made to a VPC"
+
+    namespace                 = "CloudTrailMetrics"
+    metric_name               = "VpcEventCount"
+    comparison_operator       = "GreaterThanOrEqualToThreshold"
+    threshold                 = "1"
+    evaluation_periods        = "1"
+    period                    = "300"
+    statistic                 = "Sum"
+    treat_missing_data        = "notBreaching"
+}
+
+#---------------------------------------------------
 # Detect and alert on changes on an Internet Gateway in a VPC
 #
 # Trigger: >=1 event within 5 minutes
@@ -108,45 +148,6 @@ resource "aws_cloudwatch_metric_alarm" "alarm-vpc-nacl-changes" {
     treat_missing_data        = "notBreaching"
 }
 
-#---------------------------------------------------
-# Detect and alert on VPC changes
-#
-# Trigger: >=1 event within 5 minutes
-#---------------------------------------------------
-resource "aws_cloudwatch_log_metric_filter" "filter-vpc-changes" {
-    name = "vpc_changes"
-    pattern = <<PATTERN
-{ ($.eventName = CreateVpc) || ($.eventName = DeleteVpc) || ($.eventName
-    = ModifyVpcAttribute) || ($.eventName = AcceptVpcPeeringConnection) ||
-    ($.eventName = CreateVpcPeeringConnection) || ($.eventName =
-    DeleteVpcPeeringConnection) || ($.eventName =
-    RejectVpcPeeringConnection) || ($.eventName = AttachClassicLinkVpc) ||
-    ($.eventName = DetachClassicLinkVpc) || ($.eventName =
-    DisableVpcClassicLink) || ($.eventName = EnableVpcClassicLink) }
-PATTERN
-
-    log_group_name = "${var.cloudwatch_log_group}"
-
-    metric_transformation {
-        namespace = "CloudTrailMetrics"
-        name = "VpcEventCount"
-        value = "1"
-    }
-}
-
-resource "aws_cloudwatch_metric_alarm" "alarm-vpc-changes" {
-    alarm_name                = "VPC changes"
-    alarm_description         = "Triggers when changes are made to a VPC"
-
-    namespace                 = "CloudTrailMetrics"
-    metric_name               = "VpcEventCount"
-    comparison_operator       = "GreaterThanOrEqualToThreshold"
-    threshold                 = "1"
-    evaluation_periods        = "1"
-    period                    = "300"
-    statistic                 = "Sum"
-    treat_missing_data        = "notBreaching"
-}
 
 #========================================================================
 #       VPN ALERTS
