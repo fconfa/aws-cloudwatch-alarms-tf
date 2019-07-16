@@ -1,11 +1,11 @@
 # AWS CloudWatch Alarms
 
-Terraform project to create a series of sample CloudWatch alarms  to monitor many aspects of your account and infrastructure.
+Terraform project to create a series of sample CloudWatch alarms to monitor many aspects of your AWS account and infrastructure.
 
 ## Requirements
 
 ### Tools
-* Terraform (tested only on 0.12+)
+* Terraform (tested on 0.12+)
 * AWS CLI suggested
 * AWS Account credentials configured in AWSCLI or passed via environment variables
 
@@ -16,14 +16,17 @@ Terraform project to create a series of sample CloudWatch alarms  to monitor man
 
 ## Variables
 
-You must provide valid values for the following variables by editing the terraform.tfvars file.
+You must provide valid values for the following variables by editing the _terraform.tfvars_ file.
 
 * aws_account_id **(required):** The Id of the AWS account to use
-* aws_region **(required):** The AWS region to provision resources in
+* aws_region **(required):** The AWS region to provision resources in (some services, like IAM or Route53, are available in the US-EAST-1 region only)
 * cloudwatch_log_group **(required):** The name of the CloudWatch Log Group where CloudTrail events are sent
 * vpn_id **(optional)**: The Id of a VPN connection to add alerts to (no VPN alarm will be created if this value is empty)
 
-## VPC alarms
+## Alarms
+This is a list of alarms that will be created, aggregated by area/service.
+
+### VPC
 
 Alarm Name|Description|Trigger
 ---|---|---
@@ -35,10 +38,9 @@ VPN down|Triggers when the state of both VPN tunnels in an AWS VPN connection ar
 VPN Data Transfer Out|Alerts on outgoing VPN traffic over a specific threshold|-
 VPN Data Transfer In|Alerts on incoming VPN traffic over a specific threshold|-
 SSH connection rejected|Alarms on SSH session rejected. Requires VPC Flow Log enabled and streaming to CloudWatch|>=10 within 1 hour
-RDP connections from internet
 
 
-## IAM alarms
+### IAM
 
 Alarm Name|Description|Trigger
 ---|---|---
@@ -52,21 +54,21 @@ Console login failed|Alert on 3 or more AWS Console failed logins|>=3 failed log
 Console login without MFA|Alert on AWS Console logins without MFA|-
 Changes to MFA|Alarm that triggers when changes are made to IAM MFA devices (Virtual or Hardware)|-
 
-## EC2 alarms
+### EC2
 
 Alarm Name|Description|Trigger
 ---|---|---
 EC2 changes detected|Alerts when changes are detected on EC2 instances|-
 Security Group change detected|Alerts on changes to Security Groups|-
 
-## Route53
+### Route53
 
 Alarm Name|Description|Trigger
 ---|---|---
 Route53 / MyApp HealthCheck|Fired when R53 health check on specified endpoint fails|<1 over 2 min period
 Route53 / MyApp - High connection time|Monitor average connection time to endpoint|>2000ms over 2min period
 
-## Cost
+## Costs
 
 * Metrics collected by the CloudWatch Agent on EC2 instances are billed as custom metrics.
 * TBC...
